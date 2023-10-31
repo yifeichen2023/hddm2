@@ -1117,6 +1117,9 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
     cdef np.ndarray[double, ndim=2] wm_qs_mf = np.ones((comb(nstates,2,exact=True),2))*q # first-stage RL MF Q-values
     cdef np.ndarray[double, ndim=2] wm_qs_mb = np.ones((nstates, 2))*q # second-stage RL Q-values
 
+    cdef init_qs_mf = np.ones((comb(nstates,2,exact=True),2))*q
+    cdef init_qs_mb = np.ones((nstates, 2))*q
+
     cdef np.ndarray[double, ndim=2] qs_mf = np.ones((comb(nstates,2,exact=True),2))*q # first-stage MF Q-values
     cdef np.ndarray[double, ndim=2] qs_mb = np.ones((nstates, 2))*q # second-stage Q-values
 
