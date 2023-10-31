@@ -1231,11 +1231,20 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
 
         s_size = x1s.shape[0]
         
-        # rl_qs_mf[:,0] = q   # YC modified for new WM, 10-30-23, may not need it???
-        # rl_qs_mf[:,1] = q
+        rl_qs_mf[:,0] = q   # YC modified for new WM, 10-30-23
+        rl_qs_mf[:,1] = q
+        rl_qs_mb[:,0] = q
+        rl_qs_mb[:,1] = q
 
-        # rl_qs_mb[:,0] = q
-        # rl_qs_mb[:,1] = q
+        wm_qs_mf[:,0] = q   # YC modified for new WM, 10-30-23
+        wm_qs_mf[:,1] = q
+        wm_qs_mb[:,0] = q
+        wm_qs_mb[:,1] = q
+
+        init_qs_mf[:,0] = q   # YC modified for new WM, 10-30-23
+        init_qs_mf[:,1] = q
+        init_qs_mb[:,0] = q
+        init_qs_mb[:,1] = q
 
         if alpha != 100.00:
             alfa = (2.718281828459**alpha) / (1 + 2.718281828459**alpha)
@@ -1783,13 +1792,17 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                 rl_qs_mf[s1s[i], responses1[i]] = rl_qs_mf[s1s[i], responses1[
                     i]] + lambda__ * dtQ2  # eligibility trace
 
-            # YC added, new WM 10-30-23
-            qs_mf = wm_w_*wm_qs_mf + (1-wm_w_)*rl_qs_mf # first-stage MF Q-values
-            qs_mb = wm_w_*wm_qs_mb + (1-wm_w_)*rl_qs_mb # second-stage Q-values
+            
+            
+            # asdfasdfasdfjij = 3+2 # second-stage Q-values
 
             # YC added, forgetting on all choices + all stages, 10-30-23
             wm_qs_mf = wm_qs_mf + gamma_*(init_qs_mf-wm_qs_mf)
             wm_qs_mb = wm_qs_mb + gamma_*(init_qs_mb-wm_qs_mb)
+
+            # YC added, new WM 10-30-23
+            qs_mf = wm_w_*wm_qs_mf + (1-wm_w_)*rl_qs_mf # first-stage MF Q-values
+            qs_mb = wm_w_*wm_qs_mb + (1-wm_w_)*rl_qs_mb # second-stage Q-values
 
             # Updating ndt-related variables, regardless of pdf
             # Updating encountraces
@@ -1821,13 +1834,13 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
 
             # YC commented out for new WM, 10-30-23
             # Updating memory for values
-            #if beta_ndt4 != 0.00:
-            #    for s_ in range(nstates):
-            #        for a_ in range(2):
-            #            if (s_ == s2s[i]) and (a_ == responses2[i]):
-            #                pass
-            #            else:
-            #                memory_weight_val[s_, a_] *= (1-gamma_)
+            if beta_ndt4 != 0.00:
+                for s_ in range(nstates):
+                    for a_ in range(2):
+                        if (s_ == s2s[i]) and (a_ == responses2[i]):
+                            pass
+                        else:
+                            memory_weight_val[s_, a_] *= (1-gamma_)
             #else: # just discount pointwise values
             #    # memory decay for unexperienced options in this trial
             #    if w != 100.00: # should update both Qmf and Qmb
