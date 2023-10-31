@@ -1277,7 +1277,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         qs_mf = wm_w_*wm_qs_mf + (1-wm_w_)*rl_qs_mf # first-stage MF Q-values
         qs_mb = wm_w_*wm_qs_mb + (1-wm_w_)*rl_qs_mb # second-stage Q-values
         print("starting point", init_qs_mf.shape, qs_mf.shape)
-        print("starting point", init_qs_mf.shape, qs_mf.shape)
+        print("starting point", init_qs_mb.shape, qs_mb.shape)
 
 
 
@@ -1804,8 +1804,8 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             # YC added, new WM 10-30-23
             qs_mf = wm_w_*wm_qs_mf + (1-wm_w_)*rl_qs_mf # first-stage MF Q-values
             qs_mb = wm_w_*wm_qs_mb + (1-wm_w_)*rl_qs_mb # second-stage Q-values
-            print(i, init_qs_mf.shape, qs_mf.shape)
-            print(i, init_qs_mf.shape, qs_mf.shape)
+            print(init_qs_mf.shape, qs_mf.shape)
+            print(init_qs_mb.shape, qs_mb.shape)
             # Updating ndt-related variables, regardless of pdf
             # Updating encountraces
             # ndt_counter_ind[s2s[i], 0] += 1
