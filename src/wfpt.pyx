@@ -971,6 +971,7 @@ def wiener_like_rl_2step(np.ndarray[double, ndim=1] x1, # 1st-stage RT
 
 
 # JY added on 2022-10-01 for modeling ndt as a function of uncertainty & entropy
+# YC modifed for new WM components, NOTE that it is not competable with regressor? (beta_ndt etc.), 10-30-23
 def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                       np.ndarray[double, ndim=1] x2, # 2nd-stage RT
                       np.ndarray[long,ndim=1] s1, # 1st-stage state
@@ -982,7 +983,8 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                       double q, double alpha, double pos_alpha,
 
                       # double w,
-                      double gamma, double gamma2,
+                      # double gamma, double gamma2,    # YC commented out for new WM, 10-30-23
+                      double wm_w, double gamma,    # YC added for new WM, 10-30-23
                       double lambda_,
 
                       double v0, double v1, double v2,
@@ -1037,8 +1039,10 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
     cdef double pos_alfa
     cdef double alfa2
 
-    cdef double gamma_
-    cdef double gamma__
+    # cdef double gamma_
+    # cdef double gamma__
+    cdef double gamma_  # YC added for new WM, 10-30-23
+    cdef double wm_w_
     cdef double lambda__
 
     cdef double w_
@@ -1169,9 +1173,15 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         # cdef np.ndarray[double, ndim=1] qs = np.array([q, q])
         if j>0:  # if in the second condition
 
-            qs_mf = np.ones((comb(nstates,2,exact=True),2))*q # first-stage MF Q-values
-            qs_mb = np.ones((nstates, 2))*q # second-stage Q-values
+            rl_qs_mf = np.ones((comb(nstates,2,exact=True),2))*q # first-stage RL-MF Q-values
+            rl_qs_mb = np.ones((nstates, 2))*q # second-stage RL Q-values
 
+            # YC added wm Qs, 10-30-23
+            wm_qs_mf = np.ones((comb(nstates,2,exact=True),2))*q # first-stage WM-MF Q-values
+            wm_qs_mb = np.ones((nstates, 2))*q # second-stage WM Q-values
+
+            init_qs_mf = np.ones((comb(nstates,2,exact=True),2))*q
+            init_qs_mb = np.ones((nstates, 2))*q
 
             # cdef np.ndarray[double, ndim=2] qs_mf_success = np.ones((comb(nstates,2,exact=True),2))*q # first-stage MF Q-values
             # cdef np.ndarray[double, ndim=2] qs_mf_n = np.ones((comb(nstates,2,exact=True),2))*q # first-stage MF Q-values
@@ -1211,20 +1221,22 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         s2s = s2[split_by == s]
 
         s_size = x1s.shape[0]
-        qs_mf[:,0] = q
-        qs_mf[:,1] = q
+        
+        # rl_qs_mf[:,0] = q   # YC modified for new WM, 10-30-23, may not need it???
+        # rl_qs_mf[:,1] = q
 
-        qs_mb[:,0] = q
-        qs_mb[:,1] = q
+        # rl_qs_mb[:,0] = q
+        # rl_qs_mb[:,1] = q
 
         if alpha != 100.00:
             alfa = (2.718281828459**alpha) / (1 + 2.718281828459**alpha)
         if gamma != 100.00:
             gamma_ = (2.718281828459**gamma) / (1 + 2.718281828459**gamma)
-        if gamma2 != 100.00:
-            gamma__ = (2.718281828459**gamma2) / (1 + 2.718281828459**gamma2)
-        else:
-            gamma__ = gamma_
+            gamma__ = gamma_    # YC added since new WM doesn't have separte gamma, at least for now, 10-30-23
+        # if gamma2 != 100.00:
+        #     gamma__ = (2.718281828459**gamma2) / (1 + 2.718281828459**gamma2)
+        # else:
+        #     gamma__ = gamma_
         if alpha2 != 100.00:
             alfa2 = (2.718281828459**alpha2) / (1 + 2.718281828459**alpha2)
         else:
@@ -1237,9 +1249,15 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             w2_ = (2.718281828459**w2) / (1 + 2.718281828459**w2)
         if w_unc != 0.00:
             w_unc_ = (2.718281828459 ** w_unc) / (1 + 2.718281828459 ** w_unc)
+        
+        # YC added new WM components, 10-30-23
+        if wm_w != 100.00:
+            wm_w_ = (2.718281828459**wm_w) / (1 + 2.718281828459**wm_w)
+        else:
+            wm_w_ = 0
 
-
-
+        qs_mf = wm_w_*wm_qs_mf + (1-wm_w_)*rl_qs_mf # first-stage MF Q-values
+        qs_mb = wm_w_*wm_qs_mb + (1-wm_w_)*rl_qs_mb # second-stage Q-values
 
 
 
@@ -1725,26 +1743,44 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             # just update 1st-stage MF values if estimating
             # 2023-02-22: Revive the QMF value update
             # Just assume single learning rate for two stages for now?
+            # YC modified for new WM, 10-30-23
             if w != 100.00: # if so, we need to update both Qmb and Qmf
                 if alpha != 100.00: # there should be at least one learning rate to do this (alpha), whether using same or separate lr
-            
-                    dtQ1 = qs_mb[s2s[i], responses2[i]] - qs_mf[s1s[i], responses1[i]]  # delta stage 1
-                    qs_mf[s1s[i], responses1[i]] = qs_mf[
+                    # WM update
+                    if wm_w_ != 0:  # YC added for new WM, 10-30-23
+                        wm_qs_mf[s1s[i], responses1[i]] = wm_qs_mb[s2s[i], responses2[i]]
+                        wm_qs_mb[s2s[i], responses2[i]] = feedbacks[i]
+
+                    # RL update
+                    dtQ1 = rl_qs_mb[s2s[i], responses2[i]] - rl_qs_mf[s1s[i], responses1[i]]  # delta stage 1
+                    rl_qs_mf[s1s[i], responses1[i]] = rl_qs_mf[
                                                     s1s[i], responses1[i]] + alfa * dtQ1  # delta update for qmf
                 # if alpha2 != 100.00:
-                    dtQ2 = feedbacks[i] - qs_mb[s2s[i], responses2[i]]  # delta stage 2
-                    qs_mb[s2s[i], responses2[i]] = qs_mb[
+                    dtQ2 = feedbacks[i] - rl_qs_mb[s2s[i], responses2[i]]  # delta stage 2
+                    rl_qs_mb[s2s[i], responses2[i]] = rl_qs_mb[
                                                     s2s[i], responses2[i]] + alfa2 * dtQ2  # delta update for qmb
-
             else: # if not using both Qmb and Qmf, just update Qmb
                 if alpha != 100.00:
-                    dtQ2 = feedbacks[i] - qs_mb[s2s[i], responses2[i]]  # delta stage 2
-                    qs_mb[s2s[i], responses2[i]] = qs_mb[
+                    # WM update
+                    if wm_w_ != 0:  # YC added for new WM, 10-30-23
+                        wm_qs_mb[s2s[i], responses2[i]] = feedbacks[i]
+
+                    # RL update
+                    dtQ2 = feedbacks[i] - rl_qs_mb[s2s[i], responses2[i]]  # delta stage 2
+                    rl_qs_mb[s2s[i], responses2[i]] = rl_qs_mb[
                                                     s2s[i], responses2[i]] + alfa * dtQ2  # delta update for qmb
 
             if lambda_ != 100.00:  # if using eligibility trace
-                qs_mf[s1s[i], responses1[i]] = qs_mf[s1s[i], responses1[
+                rl_qs_mf[s1s[i], responses1[i]] = rl_qs_mf[s1s[i], responses1[
                     i]] + lambda__ * dtQ2  # eligibility trace
+
+            # YC added, new WM 10-30-23
+            qs_mf = wm_w_*wm_qs_mf + (1-wm_w_)*rl_qs_mf # first-stage MF Q-values
+            qs_mb = wm_w_*wm_qs_mb + (1-wm_w_)*rl_qs_mb # second-stage Q-values
+
+            # YC added, forgetting on all choices + all stages, 10-30-23
+            wm_qs_mf = wm_qs_mf + gamma_*(init_qs_mf-wm_qs_mf)
+            wm_qs_mb = wm_qs_mb + gamma_*(init_qs_mb-wm_qs_mb)
 
             # Updating ndt-related variables, regardless of pdf
             # Updating encountraces
@@ -1774,35 +1810,35 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             #     memory_weight_tr = memory_weight_tr_set[s1s[i], 0]
 
 
-
+            # YC commented out for new WM, 10-30-23
             # Updating memory for values
-            if beta_ndt4 != 0.00:
-                for s_ in range(nstates):
-                    for a_ in range(2):
-                        if (s_ == s2s[i]) and (a_ == responses2[i]):
-                            pass
-                        else:
-                            memory_weight_val[s_, a_] *= (1-gamma_)
-            else: # just discount pointwise values
-                # memory decay for unexperienced options in this trial
-                if w != 100.00: # should update both Qmf and Qmb
-                    for s_ in range(nstates):
-                        for a_ in range(2):
-                            if (s_ is not s2s[i]) or (a_ is not responses2[i]):
-                                # qs_mb[s_, a_] = qs_mb[s_, a_] * (1-gamma)
-                                qs_mb[s_, a_] *= (1 - gamma__)
-                                
-                # 2023-02-22: Revive the QMF decay
-                    for s_ in range(comb(nstates, 2, exact=True)):
-                        for a_ in range(2):
-                            if (s_ is not s1s[i]) or (a_ is not responses1[i]):
-                                qs_mf[s_, a_] *= (1 - gamma_)
-                else: # don't have to update Qmf
-                    for s_ in range(nstates):
-                        for a_ in range(2):
-                            if (s_ is not s2s[i]) or (a_ is not responses2[i]):
-                                # qs_mb[s_, a_] = qs_mb[s_, a_] * (1-gamma)
-                                qs_mb[s_, a_] *= (1 - gamma_)                    
+            #if beta_ndt4 != 0.00:
+            #    for s_ in range(nstates):
+            #        for a_ in range(2):
+            #            if (s_ == s2s[i]) and (a_ == responses2[i]):
+            #                pass
+            #            else:
+            #                memory_weight_val[s_, a_] *= (1-gamma_)
+            #else: # just discount pointwise values
+            #    # memory decay for unexperienced options in this trial
+            #    if w != 100.00: # should update both Qmf and Qmb
+            #        for s_ in range(nstates):
+            #            for a_ in range(2):
+            #                if (s_ is not s2s[i]) or (a_ is not responses2[i]):
+            #                    # qs_mb[s_, a_] = qs_mb[s_, a_] * (1-gamma)
+            #                    qs_mb[s_, a_] *= (1 - gamma__)
+            #                    
+            #    # 2023-02-22: Revive the QMF decay
+            #        for s_ in range(comb(nstates, 2, exact=True)):
+            #            for a_ in range(2):
+            #                if (s_ is not s1s[i]) or (a_ is not responses1[i]):
+            #                    qs_mf[s_, a_] *= (1 - gamma_)
+            #    else: # don't have to update Qmf
+            #        for s_ in range(nstates):
+            #            for a_ in range(2):
+            #                if (s_ is not s2s[i]) or (a_ is not responses2[i]):
+            #                    # qs_mb[s_, a_] = qs_mb[s_, a_] * (1-gamma)
+            #                    qs_mb[s_, a_] *= (1 - gamma_)                    
 
             # memory_weight_val *= (1 - gamma_) # forgetting for all
             # memory_weight_val[s2s[i], responses2[i]] += 1
