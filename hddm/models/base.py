@@ -1228,7 +1228,7 @@ class HDDMBase(AccumulatorModel):
                 "st2",
                 "sz2",
                 "sv2"
-
+                "wm_w", # YC added for WM, 10-25-23
 
 
             )
