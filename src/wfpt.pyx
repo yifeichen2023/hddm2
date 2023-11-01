@@ -1810,6 +1810,8 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                 print(i, len(init_qs_mf), len(qs_mf))
             if len(init_qs_mb)!=len(qs_mb):
                 print(i, len(init_qs_mb), len(qs_mb))
+            if i%20==0:
+                print(i)
             # Updating ndt-related variables, regardless of pdf
             # Updating encountraces
             # ndt_counter_ind[s2s[i], 0] += 1
