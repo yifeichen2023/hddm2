@@ -1809,17 +1809,17 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                 qs_mf = rl_qs_mf
                 qs_mb = rl_qs_mb
             if len(init_qs_mf)!=len(qs_mf):
-                print(i, len(init_qs_mf), len(qs_mf))
+                print(i, 'first, q', len(init_qs_mf), len(qs_mf))
             if len(init_qs_mb)!=len(qs_mb):
-                print(i, len(init_qs_mb), len(qs_mb))
+                print(i, 'second, q', len(init_qs_mb), len(qs_mb))
             if len(init_qs_mf)!=len(rl_qs_mf):
-                print(i, len(init_qs_mf), len(rl_qs_mf))
+                print(i, 'first, rlq', len(init_qs_mf), len(rl_qs_mf))
             if len(init_qs_mf)!=len(rl_qs_mb):
-                print(i, len(init_qs_mf), len(rl_qs_mb))
+                print(i, 'second, rlq', len(init_qs_mf), len(rl_qs_mb))
             if len(init_qs_mf)!=len(wm_qs_mf):
-                print(i, len(init_qs_mf), len(wm_qs_mf))
+                print(i, 'first, wmq', len(init_qs_mf), len(wm_qs_mf))
             if len(init_qs_mf)!=len(wm_qs_mb):
-                print(i, len(init_qs_mf), len(wm_qs_mb))
+                print(i, 'second, wmq', len(init_qs_mf), len(wm_qs_mb))
             if i+1%50==0:
                 print(i)
             # Updating ndt-related variables, regardless of pdf
