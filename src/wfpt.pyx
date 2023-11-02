@@ -1271,8 +1271,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         # YC added new WM components, 10-30-23
         if wm_w != 100.00:
             wm_w_ = (2.718281828459**wm_w) / (1 + 2.718281828459**wm_w)
-        else:
-            wm_w_ = 0
 
         qs_mf = wm_w_*wm_qs_mf + (1-wm_w_)*rl_qs_mf # first-stage MF Q-values
         qs_mb = wm_w_*wm_qs_mb + (1-wm_w_)*rl_qs_mb # second-stage Q-values
@@ -1768,7 +1766,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             if w != 100.00: # if so, we need to update both Qmb and Qmf
                 if alpha != 100.00: # there should be at least one learning rate to do this (alpha), whether using same or separate lr
                     # WM update
-                    if wm_w_ != 0:  # YC added for new WM, 10-30-23
+                    if wm_w != 100.00:  # YC added for new WM, 10-30-23
                         wm_qs_mf[s1s[i], responses1[i]] = wm_qs_mb[s2s[i], responses2[i]]
                         wm_qs_mb[s2s[i], responses2[i]] = feedbacks[i]
 
@@ -1783,7 +1781,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             else: # if not using both Qmb and Qmf, just update Qmb
                 if alpha != 100.00:
                     # WM update
-                    if wm_w_ != 0:  # YC added for new WM, 10-30-23
+                    if wm_w != 100.00:  # YC added for new WM, 10-30-23
                         wm_qs_mb[s2s[i], responses2[i]] = feedbacks[i]
 
                     # RL update
@@ -1804,13 +1802,25 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             wm_qs_mb = wm_qs_mb + gamma_*(init_qs_mb-wm_qs_mb)
 
             # YC added, new WM 10-30-23
-            qs_mf = wm_w_*wm_qs_mf + (1-wm_w_)*rl_qs_mf # first-stage MF Q-values
-            qs_mb = wm_w_*wm_qs_mb + (1-wm_w_)*rl_qs_mb # second-stage Q-values
+            if wm_w != 100.00:
+                qs_mf = wm_w_*wm_qs_mf + (1-wm_w_)*rl_qs_mf # first-stage MF Q-values
+                qs_mb = wm_w_*wm_qs_mb + (1-wm_w_)*rl_qs_mb # second-stage Q-values
+            else:
+                qs_mf = rl_qs_mf
+                qs_mb = rl_qs_mb
             if len(init_qs_mf)!=len(qs_mf):
                 print(i, len(init_qs_mf), len(qs_mf))
             if len(init_qs_mb)!=len(qs_mb):
                 print(i, len(init_qs_mb), len(qs_mb))
-            if i%20==0:
+            if len(init_qs_mf)!=len(rl_qs_mf):
+                print(i, len(init_qs_mf), len(rl_qs_mf))
+            if len(init_qs_mf)!=len(rl_qs_mb):
+                print(i, len(init_qs_mf), len(rl_qs_mb))
+            if len(init_qs_mf)!=len(wm_qs_mf):
+                print(i, len(init_qs_mf), len(wm_qs_mf))
+            if len(init_qs_mf)!=len(wm_qs_mb):
+                print(i, len(init_qs_mf), len(wm_qs_mb))
+            if i+1%50==0:
                 print(i)
             # Updating ndt-related variables, regardless of pdf
             # Updating encountraces
@@ -1823,6 +1833,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             # memory_weight_tr_set *= (1 - gamma__) # forgetting for all
             # memory_weight_tr_ind[s2s[i], 0] += 1
             # memory_weight_tr_set[s1s[i], 0] += 1
+            print('beta_ndt3 start')
             if beta_ndt3 != 0.00:
                 if mem_unc_rep == 1: # ind
                     for s_ in range(nstates):
@@ -1833,7 +1844,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                         if s_ is not s1s[i]:
                             memory_weight_tr_set[s_,0] *= (1-gamma__)
 
-
+            print('beta_ndt3 end')
             # if mem_unc_rep == 1:  # ind
             #     memory_weight_tr = (memory_weight_tr_ind[planets[0], 0] + memory_weight_tr_ind[planets[1], 0]) / 2
             # elif mem_unc_rep == -1:  # set
@@ -1842,6 +1853,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
 
             # YC commented out for new WM, 10-30-23
             # Updating memory for values
+            print('beta_ndt4 start')
             if beta_ndt4 != 0.00:
                 for s_ in range(nstates):
                     for a_ in range(2):
@@ -1849,6 +1861,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                             pass
                         else:
                             memory_weight_val[s_, a_] *= (1-gamma_)
+            print('beta_ndt4 end')
             #else: # just discount pointwise values
             #    # memory decay for unexperienced options in this trial
             #    if w != 100.00: # should update both Qmf and Qmb
@@ -1898,10 +1911,11 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             #     qs_mf[s1s[i], responses1[i]] = qs_mf[s1s[i], responses1[i]] + lambda__ * dtQ2 # eligibility trace
 
             # Replace TD updating rule with beta (bayesian) updating
+            print('qs_mb_n start')
             qs_mb_n[s2s[i], responses2[i]] += 1
             if feedbacks[i] == 1:
                 qs_mb_success[s2s[i], responses2[i]] += 1
-
+            print('qs_mb_n end')
 
             # memory decay for unexperienced options in this trial
 
