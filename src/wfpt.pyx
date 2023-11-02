@@ -1815,11 +1815,11 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             if len(init_qs_mf)!=len(rl_qs_mf):
                 print(i, 'first, rlq', len(init_qs_mf), len(rl_qs_mf))
             if len(init_qs_mf)!=len(rl_qs_mb):
-                print(i, 'second, rlq', len(init_qs_mf), len(rl_qs_mb))
+                print(i, 'second, rlq', len(init_qs_mb), len(rl_qs_mb))
             if len(init_qs_mf)!=len(wm_qs_mf):
                 print(i, 'first, wmq', len(init_qs_mf), len(wm_qs_mf))
             if len(init_qs_mf)!=len(wm_qs_mb):
-                print(i, 'second, wmq', len(init_qs_mf), len(wm_qs_mb))
+                print(i, 'second, wmq', len(init_qs_mb), len(wm_qs_mb))
             if i+1%50==0:
                 print(i)
             # Updating ndt-related variables, regardless of pdf
