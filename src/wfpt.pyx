@@ -1767,8 +1767,8 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                 if alpha != 100.00: # there should be at least one learning rate to do this (alpha), whether using same or separate lr
                     # WM update
                     if wm_w != 100.00:  # YC added for new WM, 10-30-23
-                        wm_qs_mf[s1s[i], responses1[i]] = wm_qs_mb[s2s[i], responses2[i]]
-                        wm_qs_mb[s2s[i], responses2[i]] = feedbacks[i]
+                        wm_qs_mf[s1s[i], responses1[i]] = wm_qs_mb[s2s[i], responses2[i]]   # update first stage first
+                        wm_qs_mb[s2s[i], responses2[i]] = feedbacks[i]  # then second stage
 
                     # RL update
                     dtQ1 = rl_qs_mb[s2s[i], responses2[i]] - rl_qs_mf[s1s[i], responses1[i]]  # delta stage 1
@@ -1814,11 +1814,11 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                 print(i, 'second, q', len(init_qs_mb), len(qs_mb))
             if len(init_qs_mf)!=len(rl_qs_mf):
                 print(i, 'first, rlq', len(init_qs_mf), len(rl_qs_mf))
-            if len(init_qs_mf)!=len(rl_qs_mb):
+            if len(init_qs_mb)!=len(rl_qs_mb):
                 print(i, 'second, rlq', len(init_qs_mb), len(rl_qs_mb))
             if len(init_qs_mf)!=len(wm_qs_mf):
                 print(i, 'first, wmq', len(init_qs_mf), len(wm_qs_mf))
-            if len(init_qs_mf)!=len(wm_qs_mb):
+            if len(init_qs_mb)!=len(wm_qs_mb):
                 print(i, 'second, wmq', len(init_qs_mb), len(wm_qs_mb))
             if i+1%50==0:
                 print(i)
