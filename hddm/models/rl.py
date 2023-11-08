@@ -25,7 +25,10 @@ class Hrl(HDDM):
         self.rl_class = RL_2step
         self.two_stage = kwargs.pop("two_stage", False) # whether to RLDDM just 1st stage or both stages
         self.sep_alpha = kwargs.pop("sep_alpha", False)  # use different learning rates for second stage
-        self.sep_gamma = kwargs.pop("sep_gamma", False)
+
+        self.wm = kwargs.pop('wm', False) # added for WM, YC 11-08-23
+        # self.sep_gamma = kwargs.pop("sep_gamma", False) # YC commented out for new RLDDMWM 11-08-23
+
         self.lambda_ = kwargs.pop("lambda_", False)  # added for two-step task
 
         self.w = kwargs.pop("w", False)
@@ -98,18 +101,18 @@ class Hrl(HDDM):
                         std_value=1,
                     )
                 )
-            if self.gamma:
-                knodes.update(
-                    self._create_family_normal_non_centered(
-                        "gamma",
-                        value=0,
-                        g_mu=0.2,
-                        g_tau=3 ** -2,
-                        std_lower=1e-10,
-                        std_upper=10,
-                        std_value=1,
-                    )
-                )
+            # if self.gamma:    # YC commented out for new WM, 11-08-23
+            #     knodes.update(
+            #         self._create_family_normal_non_centered(
+            #             "gamma",
+            #             value=0,
+            #             g_mu=0.2,
+            #             g_tau=3 ** -2,
+            #             std_lower=1e-10,
+            #             std_upper=10,
+            #             std_value=1,
+            #         )
+            #     )
             if self.w: 
                     knodes.update(
                     self._create_family_normal_non_centered(
@@ -135,18 +138,18 @@ class Hrl(HDDM):
                         std_value=1,
                     )
                 )
-            if self.sep_gamma:
-                knodes.update(
-                    self._create_family_normal_non_centered(
-                        "gamma2",
-                        value=0,
-                        g_mu=0.2,
-                        g_tau=3 ** -2,
-                        std_lower=1e-10,
-                        std_upper=10,
-                        std_value=1,
-                    )
-                )
+            # if self.sep_gamma:    # YC commented out for new WM, 11-08-23
+            #     knodes.update(
+            #         self._create_family_normal_non_centered(
+            #             "gamma2",
+            #             value=0,
+            #             g_mu=0.2,
+            #             g_tau=3 ** -2,
+            #             std_lower=1e-10,
+            #             std_upper=10,
+            #             std_value=1,
+            #         )
+            #     )
             # knodes.update(
             #     self._create_family_normal_non_centered(
             #         "w",
@@ -158,6 +161,30 @@ class Hrl(HDDM):
             #         std_value=0.1,
             #     )
             # )
+            if self.wm: # YC added for new WM, 11-08-23
+                knodes.update(
+                    self._create_family_normal_non_centered(
+                        "wm_w",
+                        value=0,
+                        g_mu=0.2,
+                        g_tau=3 ** -2,
+                        std_lower=1e-10,
+                        std_upper=10,
+                        std_value=1,
+                    )
+                )
+                knodes.update(
+                    self._create_family_normal_non_centered(
+                        "gamma",
+                        value=0,
+                        g_mu=0.2,
+                        g_tau=3 ** -2,
+                        std_lower=1e-10,
+                        std_upper=10,
+                        std_value=1,
+                    )
+                )
+
             if self.lambda_:
                 knodes.update(
                     self._create_family_normal_non_centered(
@@ -196,18 +223,18 @@ class Hrl(HDDM):
                         std_value=1,
                     )
                 )
-            if self.gamma:
-                knodes.update(
-                    self._create_family_normal(
-                        "gamma",
-                        value=0,
-                        g_mu=0.2,
-                        g_tau=3 ** -2,
-                        std_lower=1e-10,
-                        std_upper=10,
-                        std_value=1,
-                    )
-                )
+            # if self.gamma:    # YC commented out for new WM, 11-08-23
+            #     knodes.update(
+            #         self._create_family_normal(
+            #             "gamma",
+            #             value=0,
+            #             g_mu=0.2,
+            #             g_tau=3 ** -2,
+            #             std_lower=1e-10,
+            #             std_upper=10,
+            #             std_value=1,
+            #         )
+            #     )
             if self.w: 
                 knodes.update(
                     self._create_family_normal(
@@ -234,10 +261,35 @@ class Hrl(HDDM):
                     )
                 )
                 
-            if self.sep_gamma:
+            # if self.sep_gamma:    # YC commented out for new WM, 11-08-23
+            #     knodes.update(
+            #         self._create_family_normal(
+            #             "gamma2",
+            #             value=0,
+            #             g_mu=0.2,
+            #             g_tau=3 ** -2,
+            #             std_lower=1e-10,
+            #             std_upper=10,
+            #             std_value=1,
+            #         )
+            #     )
+
+            if self.wm: # YC added for WM, 11-08-23
                 knodes.update(
                     self._create_family_normal(
-                        "gamma2",
+                        "wm_w",
+                        value=0,
+                        g_mu=0.2,
+                        g_tau=3 ** -2,
+                        std_lower=1e-10,
+                        std_upper=10,
+                        std_value=1,
+                    )
+                )
+
+                knodes.update(
+                    self._create_family_normal(
+                        "gamma",
                         value=0,
                         g_mu=0.2,
                         g_tau=3 ** -2,
@@ -281,12 +333,17 @@ class Hrl(HDDM):
         wfpt_parents["v_2"] = knodes["v_2_bottom"] if self.two_stage else 100.00
         wfpt_parents["alpha"] = knodes["alpha_bottom"] if self.alpha else 100.00
         wfpt_parents["alpha2"] = knodes["alpha2_bottom"] if self.sep_alpha else 100.00
-        wfpt_parents["gamma2"] = knodes["gamma2_bottom"] if self.sep_gamma else 100.00
+        # wfpt_parents["gamma2"] = knodes["gamma2_bottom"] if self.sep_gamma else 100.00    # YC commented out for new WM, 11-08-23
         wfpt_parents["pos_alpha"] = knodes["pos_alpha_bottom"] if self.dual else 100.00
         wfpt_parents["z"] = knodes["z_bottom"] if "z" in self.include else 0.5
         wfpt_parents["z_2"] = knodes["z_2_bottom"] if "z_2" in self.include else 0.5
 
-        wfpt_parents["gamma"] = knodes["gamma_bottom"] if self.gamma else 100.00
+        # wfpt_parents["gamma"] = knodes["gamma_bottom"] if self.gamma else 100.00    # YC commented out for new WM, 11-08-23
+        
+        # working memory componenets, YC added 11-08-23
+        wfpt_parents['gamma'] = knodes['gamma_bottom'] if self.wm else 100.00   # decay parameter after each trial on all qs
+        wfpt_parents['wm_w'] = knodes['wm_w_bottom'] if self.wm else 100.00   # wm weight, final_q = wm_w*wm_q + (1-wm_w)*rl_q
+
         wfpt_parents["w"] = knodes["w_bottom"] if self.w else 100.00
         wfpt_parents["lambda_"] = knodes["lambda__bottom"] if self.lambda_ else 100.00
 

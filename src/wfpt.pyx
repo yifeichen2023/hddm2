@@ -1272,8 +1272,8 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         if wm_w != 100.00:
             wm_w_ = (2.718281828459**wm_w) / (1 + 2.718281828459**wm_w)
 
-        qs_mf = wm_w_*wm_qs_mf + (1-wm_w_)*rl_qs_mf # first-stage MF Q-values
-        qs_mb = wm_w_*wm_qs_mb + (1-wm_w_)*rl_qs_mb # second-stage Q-values
+        qs_mf = wm_w_*wm_qs_mf.copy() + (1-wm_w_)*rl_qs_mf.copy() # first-stage MF Q-values
+        qs_mb = wm_w_*wm_qs_mb.copy() + (1-wm_w_)*rl_qs_mb.copy() # second-stage Q-values
         if len(init_qs_mf)!=len(qs_mf):
             print("starting point", len(init_qs_mf), len(qs_mf))
         if len(init_qs_mb)!=len(qs_mb):
@@ -1797,17 +1797,17 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             
             # asdfasdfasdfjij = 3+2 # second-stage Q-values
 
-            # YC added, forgetting on all choices + all stages, 10-30-23
-            wm_qs_mf = wm_qs_mf + gamma_*(init_qs_mf-wm_qs_mf)
-            wm_qs_mb = wm_qs_mb + gamma_*(init_qs_mb-wm_qs_mb)
 
             # YC added, new WM 10-30-23
             if wm_w != 100.00:
-                qs_mf = wm_w_*wm_qs_mf + (1-wm_w_)*rl_qs_mf # first-stage MF Q-values
-                qs_mb = wm_w_*wm_qs_mb + (1-wm_w_)*rl_qs_mb # second-stage Q-values
+                # YC added, forgetting on all choices + all stages, 10-30-23
+                wm_qs_mf = wm_qs_mf + gamma_*(init_qs_mf-wm_qs_mf)
+                wm_qs_mb = wm_qs_mb + gamma_*(init_qs_mb-wm_qs_mb)
+                qs_mf = wm_w_*wm_qs_mf.copy() + (1-wm_w_)*rl_qs_mf.copy() # first-stage MF Q-values
+                qs_mb = wm_w_*wm_qs_mb.copy() + (1-wm_w_)*rl_qs_mb.copy() # second-stage Q-values
             else:
-                qs_mf = rl_qs_mf
-                qs_mb = rl_qs_mb
+                qs_mf = rl_qs_mf.copy()
+                qs_mb = rl_qs_mb.copy()
             if len(init_qs_mf)!=len(qs_mf):
                 print(i, 'first, q', len(init_qs_mf), len(qs_mf))
             if len(init_qs_mb)!=len(qs_mb):
