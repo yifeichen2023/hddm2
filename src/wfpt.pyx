@@ -1862,26 +1862,26 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                         else:
                             memory_weight_val[s_, a_] *= (1-gamma_)
             print('beta_ndt4 end')
-            #else: # just discount pointwise values
-            #    # memory decay for unexperienced options in this trial
-            #    if w != 100.00: # should update both Qmf and Qmb
-            #        for s_ in range(nstates):
-            #            for a_ in range(2):
-            #                if (s_ is not s2s[i]) or (a_ is not responses2[i]):
-            #                    # qs_mb[s_, a_] = qs_mb[s_, a_] * (1-gamma)
-            #                    qs_mb[s_, a_] *= (1 - gamma__)
-            #                    
-            #    # 2023-02-22: Revive the QMF decay
-            #        for s_ in range(comb(nstates, 2, exact=True)):
-            #            for a_ in range(2):
-            #                if (s_ is not s1s[i]) or (a_ is not responses1[i]):
-            #                    qs_mf[s_, a_] *= (1 - gamma_)
-            #    else: # don't have to update Qmf
-            #        for s_ in range(nstates):
-            #            for a_ in range(2):
-            #                if (s_ is not s2s[i]) or (a_ is not responses2[i]):
-            #                    # qs_mb[s_, a_] = qs_mb[s_, a_] * (1-gamma)
-            #                    qs_mb[s_, a_] *= (1 - gamma_)                    
+            else: # just discount pointwise values
+                # memory decay for unexperienced options in this trial
+                if w != 100.00: # should update both Qmf and Qmb
+                    for s_ in range(nstates):
+                        for a_ in range(2):
+                            if (s_ is not s2s[i]) or (a_ is not responses2[i]):
+                                # qs_mb[s_, a_] = qs_mb[s_, a_] * (1-gamma)
+                                qs_mb[s_, a_] *= (1 - gamma__)
+                                
+                # 2023-02-22: Revive the QMF decay
+                    for s_ in range(comb(nstates, 2, exact=True)):
+                        for a_ in range(2):
+                            if (s_ is not s1s[i]) or (a_ is not responses1[i]):
+                                qs_mf[s_, a_] *= (1 - gamma_)
+                else: # don't have to update Qmf
+                    for s_ in range(nstates):
+                        for a_ in range(2):
+                            if (s_ is not s2s[i]) or (a_ is not responses2[i]):
+                                # qs_mb[s_, a_] = qs_mb[s_, a_] * (1-gamma)
+                                qs_mb[s_, a_] *= (1 - gamma_)                    
 
             # memory_weight_val *= (1 - gamma_) # forgetting for all
             # memory_weight_val[s2s[i], responses2[i]] += 1
