@@ -1853,7 +1853,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
 
             # YC commented out for new WM, 10-30-23
             # Updating memory for values
-            print('beta_ndt4 start')
             if beta_ndt4 != 0.00:
                 for s_ in range(nstates):
                     for a_ in range(2):
@@ -1861,7 +1860,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                             pass
                         else:
                             memory_weight_val[s_, a_] *= (1-gamma_)
-            print('beta_ndt4 end')
             else: # just discount pointwise values
                 # memory decay for unexperienced options in this trial
                 if w != 100.00: # should update both Qmf and Qmb
