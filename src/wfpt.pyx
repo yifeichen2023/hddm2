@@ -1181,6 +1181,8 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         ####### 2023-08-03 INITIALIZING PARAMETERS FOR NEXT CONDITION ##### 
         # cdef np.ndarray[double, ndim=1] qs = np.array([q, q])
         if j>0:  # if in the second condition
+            qs_mf = np.ones((comb(nstates,2,exact=True),2))*q # first-stage MF Q-values
+            qs_mb = np.ones((nstates, 2))*q # second-stage Q-values
 
             rl_qs_mf = np.ones((comb(nstates,2,exact=True),2))*q # first-stage RL-MF Q-values
             rl_qs_mb = np.ones((nstates, 2))*q # second-stage RL Q-values
@@ -1272,8 +1274,12 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         if wm_w != 100.00:
             wm_w_ = (2.718281828459**wm_w) / (1 + 2.718281828459**wm_w)
 
-        qs_mf = wm_w_*wm_qs_mf.copy() + (1-wm_w_)*rl_qs_mf.copy() # first-stage MF Q-values
-        qs_mb = wm_w_*wm_qs_mb.copy() + (1-wm_w_)*rl_qs_mb.copy() # second-stage Q-values
+            qs_mf = wm_w_*wm_qs_mf.copy() + (1-wm_w_)*rl_qs_mf.copy() # first-stage MF Q-values
+            qs_mb = wm_w_*wm_qs_mb.copy() + (1-wm_w_)*rl_qs_mb.copy() # second-stage Q-values
+        else:
+            qs_mf = rl_qs_mf.copy() 
+            qs_mb = rl_qs_mb.copy()
+            
         if len(init_qs_mf)!=len(qs_mf):
             print("starting point", len(init_qs_mf), len(qs_mf))
         if len(init_qs_mb)!=len(qs_mb):
