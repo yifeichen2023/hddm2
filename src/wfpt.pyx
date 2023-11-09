@@ -1308,6 +1308,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         # loop through all trials in current condition
         # print(window_size, window_start)
         for i in range(0, s_size):
+            print(s_size, i)
             if window_start <= i < window_start + window_size:  # and (window_start <= i < window_start+window_size):
                 if counter[s1s[i]] > 0 and x1s[i]>0.15:
                 # proceed with pdf only if 1) the current 1st-stage state have been updated and 2) "plausible" RT (150 ms)
@@ -1826,8 +1827,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                 print(i, 'first, wmq', len(init_qs_mf), len(wm_qs_mf))
             if len(init_qs_mb)!=len(wm_qs_mb):
                 print(i, 'second, wmq', len(init_qs_mb), len(wm_qs_mb))
-            if i+1%50==0:
-                print(i)
+                
             # Updating ndt-related variables, regardless of pdf
             # Updating encountraces
             # ndt_counter_ind[s2s[i], 0] += 1
@@ -1839,7 +1839,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             # memory_weight_tr_set *= (1 - gamma__) # forgetting for all
             # memory_weight_tr_ind[s2s[i], 0] += 1
             # memory_weight_tr_set[s1s[i], 0] += 1
-            print('beta_ndt3 start')
             if beta_ndt3 != 0.00:
                 if mem_unc_rep == 1: # ind
                     for s_ in range(nstates):
@@ -1850,7 +1849,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                         if s_ is not s1s[i]:
                             memory_weight_tr_set[s_,0] *= (1-gamma__)
 
-            print('beta_ndt3 end')
             # if mem_unc_rep == 1:  # ind
             #     memory_weight_tr = (memory_weight_tr_ind[planets[0], 0] + memory_weight_tr_ind[planets[1], 0]) / 2
             # elif mem_unc_rep == -1:  # set
@@ -1915,11 +1913,11 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             #     qs_mf[s1s[i], responses1[i]] = qs_mf[s1s[i], responses1[i]] + lambda__ * dtQ2 # eligibility trace
 
             # Replace TD updating rule with beta (bayesian) updating
-            print('qs_mb_n start')
+            
             qs_mb_n[s2s[i], responses2[i]] += 1
             if feedbacks[i] == 1:
                 qs_mb_success[s2s[i], responses2[i]] += 1
-            print('qs_mb_n end')
+            
 
             # memory decay for unexperienced options in this trial
 
