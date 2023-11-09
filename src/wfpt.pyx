@@ -1040,7 +1040,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
     cdef double alfa2
 
     # cdef double gamma_
-    # cdef double gamma__
+    cdef double gamma__
     cdef double gamma_  # YC added for new WM, 10-30-23
     cdef double wm_w_
     cdef double lambda__
@@ -1809,7 +1809,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             if wm_w != 100.00:
                 # YC added, forgetting on all choices + all stages, 10-30-23
                 wm_qs_mf = wm_qs_mf + gamma_*(init_qs_mf-wm_qs_mf)
-                wm_qs_mb = wm_qs_mb + gamma_*(init_qs_mb-wm_qs_mb)
+                wm_qs_mb = wm_qs_mb + gamma__*(init_qs_mb-wm_qs_mb)
                 qs_mf = wm_w_*wm_qs_mf.copy() + (1-wm_w_)*rl_qs_mf.copy() # first-stage MF Q-values
                 qs_mb = wm_w_*wm_qs_mb.copy() + (1-wm_w_)*rl_qs_mb.copy() # second-stage Q-values
             else:
@@ -1827,7 +1827,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                 print(i, 'first, wmq', len(init_qs_mf), len(wm_qs_mf))
             if len(init_qs_mb)!=len(wm_qs_mb):
                 print(i, 'second, wmq', len(init_qs_mb), len(wm_qs_mb))
-                
+
             # Updating ndt-related variables, regardless of pdf
             # Updating encountraces
             # ndt_counter_ind[s2s[i], 0] += 1
