@@ -1253,6 +1253,9 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         if gamma != 100.00:
             gamma_ = (2.718281828459**gamma) / (1 + 2.718281828459**gamma)
             gamma__ = gamma_    # YC added since new WM doesn't have separte gamma, at least for now, 10-30-23
+        else:
+            gamma_ = 0
+            gamma__ = 0
         # if gamma2 != 100.00:
         #     gamma__ = (2.718281828459**gamma2) / (1 + 2.718281828459**gamma2)
         # else:
