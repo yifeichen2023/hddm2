@@ -280,6 +280,7 @@ class HDDMrl(HDDM):
                         std_value=1,
                     )
                 )
+            if self.wm: # YC added for new WM, 10-26-23
                 knodes.update(
                     self._create_family_normal_non_centered(
                         "gamma",
@@ -579,7 +580,7 @@ class HDDMrl(HDDM):
                         std_value=1,
                     )
                 )
-
+            if self.wm: # YC added for WM, 10-30-23
                 knodes.update(
                     self._create_family_normal(
                         "gamma",
