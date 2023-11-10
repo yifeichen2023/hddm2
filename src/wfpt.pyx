@@ -1278,7 +1278,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             qs_mb = wm_w_*wm_qs_mb.copy() + (1-wm_w_)*rl_qs_mb.copy() # second-stage Q-values
         else:
             wm_w_ = 0
-            
+
             qs_mf = rl_qs_mf.copy() 
             qs_mb = rl_qs_mb.copy()
             
@@ -1936,7 +1936,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             #             qs_mf[s_,a_] *= (1-gamma_)
 
             counter[s1s[i]] += 1
-    print(wm_w_, gamma_)
+    print(wm_w, wm_w_, gamma, gamma_)
     print(sum_logp)
     return sum_logp
 
