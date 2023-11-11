@@ -1774,7 +1774,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             # 2023-02-22: Revive the QMF value update
             # Just assume single learning rate for two stages for now?
             # YC modified for new WM, 10-30-23
-
+            print('Done with DDM, starting RL')
             if w != 100.00: # if so, we need to update both Qmb and Qmf
                 if alpha != 100.00: # there should be at least one learning rate to do this (alpha), whether using same or separate lr
                     # WM update
@@ -1828,7 +1828,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                 print(i, 'first, wmq', len(init_qs_mf), len(wm_qs_mf))
             if len(init_qs_mb)!=len(wm_qs_mb):
                 print(i, 'second, wmq', len(init_qs_mb), len(wm_qs_mb))
-
+            print('after normal updating')
             # Updating ndt-related variables, regardless of pdf
             # Updating encountraces
             # ndt_counter_ind[s2s[i], 0] += 1
@@ -1939,7 +1939,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
     #print(alpha, alfa)
     #print(wm_w, wm_w_, gamma, gamma_)
     #print(sum_logp)
-    print(qs_mf, qs_mb)
+    #print(qs_mf, qs_mb)
     return sum_logp
 
 # # JY added on 2022-01-03 for simultaneous regression on two-step tasks
