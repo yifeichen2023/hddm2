@@ -1806,10 +1806,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                     i]] + lambda__ * dtQ2  # eligibility trace
 
             
-            
-            # asdfasdfasdfjij = 3+2 # second-stage Q-values
-
-
             # YC added, new WM 10-30-23
             if wm_w != 100.00:
                 # YC added, forgetting on all choices + all stages, 10-30-23
@@ -1940,9 +1936,10 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
 
             counter[s1s[i]] += 1
 
-    print(alpha, alfa)
-    print(wm_w, wm_w_, gamma, gamma_)
-    print(sum_logp)
+    #print(alpha, alfa)
+    #print(wm_w, wm_w_, gamma, gamma_)
+    #print(sum_logp)
+    print(qs_mf, qs_mb)
     return sum_logp
 
 # # JY added on 2022-01-03 for simultaneous regression on two-step tasks
