@@ -1286,11 +1286,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
 
             qs_mf = rl_qs_mf.copy() 
             qs_mb = rl_qs_mb.copy()
-            
-        if len(init_qs_mf)!=len(qs_mf):
-            print("starting point", len(init_qs_mf), len(qs_mf))
-        if len(init_qs_mb)!=len(qs_mb):
-            print("starting point", len(init_qs_mb), len(qs_mb))
+
 
 
 
@@ -1315,7 +1311,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         # loop through all trials in current condition
         # print(window_size, window_start)
         for i in range(0, s_size):
-            print(s_size, i)
             if window_start <= i < window_start + window_size:  # and (window_start <= i < window_start+window_size):
                 if counter[s1s[i]] > 0 and x1s[i]>0.15:
                 # proceed with pdf only if 1) the current 1st-stage state have been updated and 2) "plausible" RT (150 ms)
@@ -1548,7 +1543,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             # 2023-02-22: Revive the QMF value update
             # Just assume single learning rate for two stages for now?
             # YC modified for new WM, 10-30-23
-            print('Done with DDM, starting RL')
             if w != 100.00: # if so, we need to update both Qmb and Qmf
                 if alpha != 100.00: # there should be at least one learning rate to do this (alpha), whether using same or separate lr
                     # WM update
@@ -1590,19 +1584,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             else:
                 qs_mf = rl_qs_mf.copy()
                 qs_mb = rl_qs_mb.copy()
-            if len(init_qs_mf)!=len(qs_mf):
-                print(i, 'first, q', len(init_qs_mf), len(qs_mf))
-            if len(init_qs_mb)!=len(qs_mb):
-                print(i, 'second, q', len(init_qs_mb), len(qs_mb))
-            if len(init_qs_mf)!=len(rl_qs_mf):
-                print(i, 'first, rlq', len(init_qs_mf), len(rl_qs_mf))
-            if len(init_qs_mb)!=len(rl_qs_mb):
-                print(i, 'second, rlq', len(init_qs_mb), len(rl_qs_mb))
-            if len(init_qs_mf)!=len(wm_qs_mf):
-                print(i, 'first, wmq', len(init_qs_mf), len(wm_qs_mf))
-            if len(init_qs_mb)!=len(wm_qs_mb):
-                print(i, 'second, wmq', len(init_qs_mb), len(wm_qs_mb))
-            print('after normal updating')
+            
             # Updating ndt-related variables, regardless of pdf
             # Updating encountraces
             # ndt_counter_ind[s2s[i], 0] += 1
@@ -1667,12 +1649,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             #             qs_mf[s_,a_] *= (1-gamma_)
 
             counter[s1s[i]] += 1
-            print('after all')
 
-    #print(alpha, alfa)
-    #print(wm_w, wm_w_, gamma, gamma_)
-    #print(sum_logp)
-    #print(qs_mf, qs_mb)
     return sum_logp
 
 # # JY added on 2022-01-03 for simultaneous regression on two-step tasks
