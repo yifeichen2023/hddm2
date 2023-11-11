@@ -1939,6 +1939,8 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             #             qs_mf[s_,a_] *= (1-gamma_)
 
             counter[s1s[i]] += 1
+
+    print(alpha, alfa)
     print(wm_w, wm_w_, gamma, gamma_)
     print(sum_logp)
     return sum_logp
