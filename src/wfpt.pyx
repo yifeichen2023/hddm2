@@ -1888,7 +1888,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
 
             # memory_weight_val *= (1 - gamma_) # forgetting for all
             # memory_weight_val[s2s[i], responses2[i]] += 1
-
+            print('after beta ndts')
             # Updating common/rare transition uncertainty (beta parameters)
             planets = state_combinations[s1s[i]]
             chosen_state = planets[responses1[i]]
@@ -1901,7 +1901,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                 beta_success_clone[chosen_state, responses1[i]] += 1
             # Update mode of beta
 
-
+            print('after Updating common/rare transition uncertainty')
 
             # update Q values, regardless of pdf
             # just update 1st-stage MF values if estimating
@@ -1935,6 +1935,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             #             qs_mf[s_,a_] *= (1-gamma_)
 
             counter[s1s[i]] += 1
+            print('after all')
 
     #print(alpha, alfa)
     #print(wm_w, wm_w_, gamma, gamma_)
