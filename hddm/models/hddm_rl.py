@@ -789,7 +789,7 @@ class HDDMrl(HDDM):
         wfpt_parents['wm_w'] = knodes['wm_w_bottom'] if self.wm else 100.00   # wm weight, final_q = wm_w*wm_q + (1-wm_w)*rl_q
 
         # advanced WM componenets, YC added 11-28-23
-        wfpt_parents['c'] = knodes['gamma_bottom'] if self.wm_c else 100.00   # working memory capacity
+        wfpt_parents['c'] = knodes['gamma_bottom'] if self.wm_c else 100.00   # working memory capacity proportion
         wfpt_parents['rho'] = knodes['gamma_bottom'] if self.wm_c else 100.00     # initial WM weighting
         wfpt_parents['gamma'] = knodes['gamma_bottom'] if self.wm_c else 100.00   # decay parameter after each trial on all qs
 
@@ -1181,7 +1181,8 @@ def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_intera
 
     # YC added 11-28-23 for advanced WM model, ssc level (notice that there should be only one ssc level)
     if c!=100.00:
-        ssc = x['ssc'].values.astype(float).iloc[0]
+        print(x['ssc'])
+        ssc = x['ssc'].iloc[0]
     else:
         ssc = 100.00
 
