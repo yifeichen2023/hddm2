@@ -1181,10 +1181,10 @@ def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_intera
 
     # YC added 11-28-23 for advanced WM model, ssc level (notice that there should be only one ssc level)
     if c!=100.00:
-        ssc = x['ssc'].values.astype(float)[0]
-        print(ssc)
+        n = x['ssc'].values.astype(float)[0]
+        print(n)
     else:
-        ssc = 100.00
+        n = 100.00
 
     # JY added for two-step tasks on 2021-12-05
     # nstates = x["nstates"].values.astype(int)
@@ -1209,7 +1209,7 @@ def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_intera
         feedback,
         split_by,
         q,
-        ssc,    # YC added for advanced WM. 11-28-23
+        n,    # YC added for advanced WM. 11-28-23
         alpha,
         pos_alpha,
         # w, # added for two-step task
