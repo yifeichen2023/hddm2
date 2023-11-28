@@ -1185,6 +1185,7 @@ def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_intera
 
     # YC added 11-28-23 for advanced WM model, ssc level (notice that there should be only one ssc level)
     ssc = x['ssc'].values[0]
+    print(ssc)
 
     # JY added for two-step tasks on 2021-12-05
     # nstates = x["nstates"].values.astype(int)
@@ -1194,6 +1195,7 @@ def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_intera
     # qval = 0 # default: simultaneous
 
     # if
+    print("wiener_like_rlddm_uncertainty")
     return wiener_like_rlddm_uncertainty(
     # return wiener_like_rlddm_2step_reg_sliding_window(
         x["rt1"].values,
