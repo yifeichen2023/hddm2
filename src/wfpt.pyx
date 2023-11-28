@@ -982,8 +982,9 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                       np.ndarray[long, ndim=1] response2,
                       np.ndarray[double, ndim=1] feedback,
                       np.ndarray[long, ndim=1] split_by,
+                      double q, 
                       double n,   # YC added for advanced WM with SSC, 11-28-23
-                      double q, double alpha, double pos_alpha,
+                      double alpha, double pos_alpha,
 
                       # double w,
                       # double gamma, double gamma2,    # YC commented out for new WM, 10-30-23
