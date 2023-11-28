@@ -376,7 +376,7 @@ class Hrl(HDDM):
             self.rl_class,
             "wfpt",
             observed=True,
-            col_name=["split_by", "feedback", "response1", "response2", "rt1", "rt2",  "q_init", "state1", "state2", ],
+            col_name=["split_by", "feedback", "response1", "response2", "rt1", "rt2",  "q_init", "state1", "state2", "ssc",],
             # col_name=["split_by", "feedback", "response1", "response2", "rt1", "rt2",  "q_init", "state1", "state2", "isleft1", "isleft2"],
             **wfpt_parents
         )
