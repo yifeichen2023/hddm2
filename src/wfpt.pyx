@@ -982,11 +982,13 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                       np.ndarray[long, ndim=1] response2,
                       np.ndarray[double, ndim=1] feedback,
                       np.ndarray[long, ndim=1] split_by,
+                      double ssc,   # YC added for advanced WM with SSC, 11-28-23
                       double q, double alpha, double pos_alpha,
 
                       # double w,
                       # double gamma, double gamma2,    # YC commented out for new WM, 10-30-23
                       double wm_w, double gamma,    # YC added for new WM, 10-30-23
+                      double c, double rho,     # YC added for advanced WM with SSC, 11-28-23
                       double lambda_,
 
                       double v0, double v1, double v2,
@@ -1276,8 +1278,18 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             w_unc_ = (2.718281828459 ** w_unc) / (1 + 2.718281828459 ** w_unc)
         
         # YC added new WM components, 10-30-23
-        if wm_w != 100.00:
+        if wm_w != 100.00 and rho==100.00:  # normal wm
             wm_w_ = (2.718281828459**wm_w) / (1 + 2.718281828459**wm_w)
+
+            qs_mf = wm_w_*wm_qs_mf.copy() + (1-wm_w_)*rl_qs_mf.copy() # first-stage MF Q-values
+            qs_mb = wm_w_*wm_qs_mb.copy() + (1-wm_w_)*rl_qs_mb.copy() # second-stage Q-values
+        # YC added for advanced WM with SSC, 11-28-23
+        elif rho != 100.00 and wm_w == 100.00:  # advanced wm with SSC
+            rho_ = (2.718281828459**rho) / (1 + 2.718281828459**rho)
+            c_ = (2.718281828459**c) / (1 + 2.718281828459**c)  # c is actually the weighting on max WMC (which is SSC)
+            c_ = ssc*c_
+
+            wm_w_ = rho_ * np.min(1, c_/ssc)
 
             qs_mf = wm_w_*wm_qs_mf.copy() + (1-wm_w_)*rl_qs_mf.copy() # first-stage MF Q-values
             qs_mb = wm_w_*wm_qs_mb.copy() + (1-wm_w_)*rl_qs_mb.copy() # second-stage Q-values
@@ -1286,7 +1298,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
 
             qs_mf = rl_qs_mf.copy() 
             qs_mb = rl_qs_mb.copy()
-
 
 
 

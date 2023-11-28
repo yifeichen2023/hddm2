@@ -23,6 +23,8 @@ class HDDMrl(HDDM):
         # self.gamma = kwargs.pop("gamma", False) # added for two-step task
         self.wm = kwargs.pop('wm', False) # added for WM, YC 10-26-23
 
+        self.wm_c = kwargs.pop('wm_c', False)   # addedd for WM choice set size complexity, YC 11-28-23
+
         self.lambda_ = kwargs.pop("lambda_", False) # added for two-step task
         self.v_reg = kwargs.pop("v_reg", False) # added for regression in two-step task
         self.z_reg = kwargs.pop("z_reg", False)
@@ -292,6 +294,42 @@ class HDDMrl(HDDM):
                         std_value=1,
                     )
                 )
+
+            if self.wm_c:   # YC added for advanced WM with set size impact, 11-28-23
+                knodes.update(
+                    self._create_family_normal_non_centered(
+                        "c",
+                        value=0,
+                        g_mu=0.2,
+                        g_tau=3 ** -2,
+                        std_lower=1e-10,
+                        std_upper=10,
+                        std_value=1,
+                    )
+                )
+                knodes.update(
+                    self._create_family_normal_non_centered(
+                        "rho",
+                        value=0,
+                        g_mu=0.2,
+                        g_tau=3 ** -2,
+                        std_lower=1e-10,
+                        std_upper=10,
+                        std_value=1,
+                    )
+                )
+                knodes.update(
+                    self._create_family_normal_non_centered(
+                        "gamma",
+                        value=0,
+                        g_mu=0.2,
+                        g_tau=3 ** -2,
+                        std_lower=1e-10,
+                        std_upper=10,
+                        std_value=1,
+                    )
+                )
+
             if self.lambda_:
                 knodes.update(
                     self._create_family_normal_non_centered(
@@ -593,6 +631,41 @@ class HDDMrl(HDDM):
                     )
                 )
 
+            if self.wm_c: # YC added for advanced WM, 11-28-23
+                knodes.update(
+                    self._create_family_normal(
+                        "c",
+                        value=0,
+                        g_mu=0.2,
+                        g_tau=3 ** -2,
+                        std_lower=1e-10,
+                        std_upper=10,
+                        std_value=1,
+                    )
+                )
+                knodes.update(
+                    self._create_family_normal(
+                        "rho",
+                        value=0,
+                        g_mu=0.2,
+                        g_tau=3 ** -2,
+                        std_lower=1e-10,
+                        std_upper=10,
+                        std_value=1,
+                    )
+                )
+                knodes.update(
+                    self._create_family_normal(
+                        "gamma",
+                        value=0,
+                        g_mu=0.2,
+                        g_tau=3 ** -2,
+                        std_lower=1e-10,
+                        std_upper=10,
+                        std_value=1,
+                    )
+                )
+
             if self.lambda_:
                 knodes.update(
                     self._create_family_normal(
@@ -714,6 +787,11 @@ class HDDMrl(HDDM):
         # working memory componenets, YC added 10-30-23
         wfpt_parents['gamma'] = knodes['gamma_bottom'] if self.wm else 100.00   # decay parameter after each trial on all qs
         wfpt_parents['wm_w'] = knodes['wm_w_bottom'] if self.wm else 100.00   # wm weight, final_q = wm_w*wm_q + (1-wm_w)*rl_q
+
+        # advanced WM componenets, YC added 11-28-23
+        wfpt_parents['c'] = knodes['gamma_bottom'] if self.wm_c else 100.00   # working memory capacity
+        wfpt_parents['rho'] = knodes['gamma_bottom'] if self.wm_c else 100.00     # initial WM weighting
+        wfpt_parents['gamma'] = knodes['gamma_bottom'] if self.wm_c else 100.00   # decay parameter after each trial on all qs
 
         wfpt_parents["beta_ndt"] = knodes["beta_ndt_bottom"] if self.regress_ndt else 0.00
         wfpt_parents["beta_ndt2"] = knodes["beta_ndt2_bottom"] if self.regress_ndt2 else 0.00
@@ -1075,7 +1153,7 @@ def wienerRL_like_2step(x, v0, v1, v2, v_interaction, z0, z1, z2, z_interaction,
 # YC commented: to revert back to the original forggeting model (simply forgetting on all unchosen choices, no weighting between RL and WM model) 
 # -> pos_alpha, gamma, gamma2, a, put this back as arguments
 # need to keep the same order of arguments/parameter in wienerRL_like_uncertainty from wfpt.pyx from src
-def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_interaction, lambda_, alpha, pos_alpha, wm_w, gamma, a,z,sz,t,st,v,sv, a_2, z_2, t_2,v_2,alpha2,
+def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_interaction, lambda_, alpha, pos_alpha, wm_w, gamma, c, rho, a,z,sz,t,st,v,sv, a_2, z_2, t_2,v_2,alpha2,
                                            two_stage, w, w2,z_scaler, z_scaler_2, z_sigma,z_sigma2,window_start,window_size, beta_ndt, beta_ndt2, beta_ndt3, beta_ndt4,
                               model_unc_rep, mem_unc_rep, unc_hybrid, w_unc, st2, sv2, sz2, p_outlier=0): # regression ver2: bounded, a fixed to 1
 
@@ -1101,6 +1179,11 @@ def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_intera
     feedback = x["feedback"].values.astype(float)
     split_by = x["split_by"].values.astype(int)
 
+    # YC added 11-28-23 for advanced WM model, ssc level (notice that there should be only one ssc level)
+    if c!=100.00:
+        ssc = x['ssc'].values.astype(float).iloc[0]
+    else:
+        ssc = 100.00
 
     # JY added for two-step tasks on 2021-12-05
     # nstates = x["nstates"].values.astype(int)
@@ -1125,12 +1208,15 @@ def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_intera
         feedback,
         split_by,
         q,
+        ssc,    # YC added for advanced WM. 11-28-23
         alpha,
         pos_alpha,
         # w, # added for two-step task
         wm_w,   # YC added for new WM, 10-30-23
         gamma, # added for two-step task
         # gamma2,   # YC commented out for new WM, 10-30-23
+        c,  # working memory capacity, YC added 11-28-23
+        rho,    # initial WM weighting, YC added 11-28-23
         lambda_, # added for two-step task
         v0, # intercept for first stage rt regression
         v1, # slope for mb
