@@ -983,7 +983,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                       np.ndarray[double, ndim=1] feedback,
                       np.ndarray[long, ndim=1] split_by,
                       double q, 
-                      double n,   # YC added for advanced WM with SSC, 11-28-23
+                      int n,   # YC added for advanced WM with SSC, 11-28-23
                       double alpha, double pos_alpha,
 
                       # double w,
@@ -1293,7 +1293,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             c_ = (2.718281828459**c) / (1 + 2.718281828459**c)  # c is actually the weighting on max WMC (which is SSC)
             c_ = n*c_
 
-            wm_w_ = rho_ * np.min(1, c_/n)
+            wm_w_ = rho_ * np.min(1, c_/float(n))
             print("wmc w:", wm_w_)
             qs_mf = wm_w_*wm_qs_mf.copy() + (1-wm_w_)*rl_qs_mf.copy() # first-stage MF Q-values
             qs_mb = wm_w_*wm_qs_mb.copy() + (1-wm_w_)*rl_qs_mb.copy() # second-stage Q-values
