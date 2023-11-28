@@ -1292,8 +1292,11 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         if rho != 100.00:  # advanced wm with SSC,  and wm_w == 100.00
             print("wmc start up")
             rho_ = (2.718281828459**rho) / (1 + 2.718281828459**rho)
+            print("after rho")
             c_ = (2.718281828459**c) / (1 + 2.718281828459**c)  # c is actually the weighting on max WMC (which is SSC)
+            print("after first c")
             c_ = float(ssc)*c_
+            print("after second c")
 
             wm_w_ = rho_ * np.min(1, c_/float(ssc))
             print("wmc w:", wm_w_)
