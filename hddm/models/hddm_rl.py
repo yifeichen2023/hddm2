@@ -1181,7 +1181,7 @@ def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_intera
 
     # YC added 11-28-23 for advanced WM model, ssc level (notice that there should be only one ssc level)
     if c!=100.00:
-        ssc = x['ssc'].values.astype(float).iloc[0]
+        ssc = x['ssc'].values.astype(float)[0]
     else:
         ssc = 100.00
 
