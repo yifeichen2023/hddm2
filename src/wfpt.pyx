@@ -1561,7 +1561,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             if w != 100.00: # if so, we need to update both Qmb and Qmf
                 if alpha != 100.00: # there should be at least one learning rate to do this (alpha), whether using same or separate lr
                     # WM update
-                    if wm_w != 100.00:  # YC added for new WM, 10-30-23
+                    if wm_w_ != 0:  # YC added for new WM, 10-30-23
                         wm_qs_mf[s1s[i], responses1[i]] = wm_qs_mb[s2s[i], responses2[i]]   # update first stage first
                         wm_qs_mb[s2s[i], responses2[i]] = feedbacks[i]  # then second stage
 
@@ -1576,7 +1576,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             else: # if not using both Qmb and Qmf, just update Qmb
                 if alpha != 100.00:
                     # WM update
-                    if wm_w != 100.00:  # YC added for new WM, 10-30-23
+                    if wm_w_ != 0:  # YC added for new WM, 10-30-23
                         wm_qs_mb[s2s[i], responses2[i]] = feedbacks[i]
 
                     # RL update
@@ -1590,7 +1590,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
 
             
             # YC added, new WM 10-30-23
-            if wm_w != 100.00:
+            if wm_w_ != 0:
                 # YC added, forgetting on all choices + all stages, 10-30-23
                 wm_qs_mf = wm_qs_mf + gamma_*(init_qs_mf-wm_qs_mf)
                 wm_qs_mb = wm_qs_mb + gamma__*(init_qs_mb-wm_qs_mb)
