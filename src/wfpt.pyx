@@ -1288,18 +1288,13 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         #    qs_mf = wm_w_*wm_qs_mf.copy() + (1-wm_w_)*rl_qs_mf.copy() # first-stage MF Q-values
         #    qs_mb = wm_w_*wm_qs_mb.copy() + (1-wm_w_)*rl_qs_mb.copy() # second-stage Q-values
         # YC added for advanced WM with SSC, 11-28-23
-        print("check wmc")
         if rho != 100.00:  # advanced wm with SSC,  and wm_w == 100.00
-            print("wmc start up")
             rho_ = (2.718281828459**rho) / (1 + 2.718281828459**rho)
-            print("after rho")
             c_ = (2.718281828459**c) / (1 + 2.718281828459**c)  # c is actually the weighting on max WMC (which is SSC)
-            print("after first c")
             c_ = float(ssc)*c_
-            print("after second c")
 
-            wm_w_ = rho_ * min(1.0, c_/ssc)
-            print("wmc w:", wm_w_)
+            wm_w_ = rho_ * min(1.0, c_/float(ssc))
+
             qs_mf = wm_w_*wm_qs_mf.copy() + (1-wm_w_)*rl_qs_mf.copy() # first-stage MF Q-values
             qs_mb = wm_w_*wm_qs_mb.copy() + (1-wm_w_)*rl_qs_mb.copy() # second-stage Q-values
         else:
@@ -1566,6 +1561,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             if w != 100.00: # if so, we need to update both Qmb and Qmf
                 if alpha != 100.00: # there should be at least one learning rate to do this (alpha), whether using same or separate lr
                     # WM update
+                    print("update values before forgetting for both wm and rl")
                     if wm_w_ != 0:  # YC added for new WM, 10-30-23
                         wm_qs_mf[s1s[i], responses1[i]] = wm_qs_mb[s2s[i], responses2[i]]   # update first stage first
                         wm_qs_mb[s2s[i], responses2[i]] = feedbacks[i]  # then second stage
@@ -1593,18 +1589,18 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                 rl_qs_mf[s1s[i], responses1[i]] = rl_qs_mf[s1s[i], responses1[
                     i]] + lambda__ * dtQ2  # eligibility trace
 
-            
+            print("decay + final values")
             # YC added, new WM 10-30-23
             if wm_w_ != 0:
                 # YC added, forgetting on all choices + all stages, 10-30-23
-                wm_qs_mf = wm_qs_mf + gamma_*(init_qs_mf-wm_qs_mf)
+                wm_qs_mf = wm_qs_mf + gamma_*(init_qs_mf-wm_qs_mf)  # forgetting toward baseline/initial Qs
                 wm_qs_mb = wm_qs_mb + gamma__*(init_qs_mb-wm_qs_mb)
                 qs_mf = wm_w_*wm_qs_mf.copy() + (1-wm_w_)*rl_qs_mf.copy() # first-stage MF Q-values
                 qs_mb = wm_w_*wm_qs_mb.copy() + (1-wm_w_)*rl_qs_mb.copy() # second-stage Q-values
             else:
                 qs_mf = rl_qs_mf.copy()
                 qs_mb = rl_qs_mb.copy()
-            
+            print("done")
             # Updating ndt-related variables, regardless of pdf
             # Updating encountraces
             # ndt_counter_ind[s2s[i], 0] += 1
