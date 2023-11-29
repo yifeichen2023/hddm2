@@ -1033,7 +1033,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
     # cdef double st = 0
     # cdef double sv = 0
 
-    print("start")
     cdef Py_ssize_t size = x1.shape[0]
     cdef Py_ssize_t i, j
     cdef Py_ssize_t s_size
@@ -1240,7 +1239,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         s2s = s2[split_by == s]
 
         s_size = x1s.shape[0]
-        print("start initialization for Qs")
+
         rl_qs_mf[:,0] = q   # YC modified for new WM, 10-30-23
         rl_qs_mf[:,1] = q
         rl_qs_mb[:,0] = q
@@ -1561,7 +1560,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             if w != 100.00: # if so, we need to update both Qmb and Qmf
                 if alpha != 100.00: # there should be at least one learning rate to do this (alpha), whether using same or separate lr
                     # WM update
-                    print("update values before forgetting for both wm and rl")
                     if wm_w_ != 0:  # YC added for new WM, 10-30-23
                         wm_qs_mf[s1s[i], responses1[i]] = wm_qs_mb[s2s[i], responses2[i]]   # update first stage first
                         wm_qs_mb[s2s[i], responses2[i]] = feedbacks[i]  # then second stage
@@ -1589,7 +1587,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
                 rl_qs_mf[s1s[i], responses1[i]] = rl_qs_mf[s1s[i], responses1[
                     i]] + lambda__ * dtQ2  # eligibility trace
 
-            print("decay + final values")
             # YC added, new WM 10-30-23
             if wm_w_ != 0:
                 # YC added, forgetting on all choices + all stages, 10-30-23
@@ -1600,7 +1597,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             else:
                 qs_mf = rl_qs_mf.copy()
                 qs_mb = rl_qs_mb.copy()
-            print("done")
             # Updating ndt-related variables, regardless of pdf
             # Updating encountraces
             # ndt_counter_ind[s2s[i], 0] += 1
@@ -1628,7 +1624,6 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             # memory_weight_val[s2s[i], responses2[i]] += 1
 
             # Updating common/rare transition uncertainty (beta parameters)
-            print("update on planet and chosen state")
             planets = state_combinations[s1s[i]]
             chosen_state = planets[responses1[i]]
             # Update mode of beta
@@ -1664,10 +1659,8 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             #     for a_ in range(2):
             #         if (s_ is not s1s[i]) or (a_ is not responses1[i]):
             #             qs_mf[s_,a_] *= (1-gamma_)
-            print("update on counter")
             counter[s1s[i]] += 1
-        print("size loop done")    
-    print("all done", sum_logp)
+
     return sum_logp
 
 # # JY added on 2022-01-03 for simultaneous regression on two-step tasks
