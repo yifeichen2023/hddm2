@@ -793,8 +793,8 @@ class HDDMrl(HDDM):
         # wfpt_parents['wm_w'] = knodes['wm_w_bottom'] if self.wm else 100.00   # wm weight, final_q = wm_w*wm_q + (1-wm_w)*rl_q
 
         # advanced WM componenets, YC added 11-28-23
-        wfpt_parents['c'] = knodes['gamma_bottom'] if self.wm_c else 100.00   # working memory capacity proportion
-        wfpt_parents['rho'] = knodes['gamma_bottom'] if self.wm_c else 100.00     # initial WM weighting
+        wfpt_parents['c'] = knodes['c_bottom'] if self.wm_c else 100.00   # working memory capacity proportion
+        wfpt_parents['rho'] = knodes['rho_bottom'] if self.wm_c else 100.00     # initial WM weighting
         wfpt_parents['gamma'] = knodes['gamma_bottom'] if self.wm_c else 100.00   # decay parameter after each trial on all qs
 
         wfpt_parents["beta_ndt"] = knodes["beta_ndt_bottom"] if self.regress_ndt else 0.00
