@@ -1645,9 +1645,9 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
 
             # Replace TD updating rule with beta (bayesian) updating
             
-            qs_mb_n[s2s[i], responses2[i]] += 1
-            if feedbacks[i] == 1:
-                qs_mb_success[s2s[i], responses2[i]] += 1
+            #qs_mb_n[s2s[i], responses2[i]] += 1
+            #if feedbacks[i] == 1:
+            #    qs_mb_success[s2s[i], responses2[i]] += 1
             
 
             # memory decay for unexperienced options in this trial
