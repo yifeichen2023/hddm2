@@ -1240,7 +1240,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
         s2s = s2[split_by == s]
 
         s_size = x1s.shape[0]
-        
+        print("start initialization for Qs")
         rl_qs_mf[:,0] = q   # YC modified for new WM, 10-30-23
         rl_qs_mf[:,1] = q
         rl_qs_mb[:,0] = q
@@ -1666,6 +1666,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             #             qs_mf[s_,a_] *= (1-gamma_)
             print("update on counter")
             counter[s1s[i]] += 1
+            print("all done")
 
     return sum_logp
 
