@@ -1184,6 +1184,7 @@ def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_intera
     split_by = x["split_by"].values.astype(int)
 
     # YC added 11-28-23 for advanced WM model, ssc level (notice that there should be only one ssc level)
+    print("get ssc")
     ssc = x['ssc'].values[0]
     print(ssc)
 

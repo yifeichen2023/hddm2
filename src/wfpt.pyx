@@ -1667,7 +1667,7 @@ def wiener_like_rlddm_uncertainty(np.ndarray[double, ndim=1] x1, # 1st-stage RT
             print("update on counter")
             counter[s1s[i]] += 1
         print("size loop done")    
-    print("all done")
+    print("all done", sum_logp)
     return sum_logp
 
 # # JY added on 2022-01-03 for simultaneous regression on two-step tasks
