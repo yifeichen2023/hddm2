@@ -1158,7 +1158,7 @@ def wienerRL_like_2step(x, v0, v1, v2, v_interaction, z0, z1, z2, z_interaction,
 # YC commented: to revert back to the original forggeting model (simply forgetting on all unchosen choices, no weighting between RL and WM model) 
 # -> pos_alpha, gamma, gamma2, a, put this back as arguments
 # need to keep the same order of arguments/parameter in wienerRL_like_uncertainty from wfpt.pyx from src
-def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_interaction, lambda_, alpha, pos_alpha, wm_w, gamma, c, rho, a,z,sz,t,st,v,sv, a_2, z_2, t_2,v_2,alpha2,
+def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_interaction, lambda_, alpha, pos_alpha, wm_w, gamma, a,z,sz,t,st,v,sv, a_2, z_2, t_2,v_2,alpha2,
                                            two_stage, w, w2,z_scaler, z_scaler_2, z_sigma,z_sigma2,window_start,window_size, beta_ndt, beta_ndt2, beta_ndt3, beta_ndt4,
                               model_unc_rep, mem_unc_rep, unc_hybrid, w_unc, st2, sv2, sz2, p_outlier=0): # regression ver2: bounded, a fixed to 1
 
@@ -1213,8 +1213,8 @@ def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_intera
         wm_w,   # YC added for new WM, 10-30-23
         gamma, # added for two-step task
         # gamma2,   # YC commented out for new WM, 10-30-23
-        c,  # working memory capacity, YC added 11-28-23
-        rho,    # initial WM weighting, YC added 11-28-23
+        # c,  # working memory capacity, YC added 11-28-23
+        # rho,    # initial WM weighting, YC added 11-28-23
         # ssc,    # YC added for advanced WM. 11-28-23
         lambda_, # added for two-step task
         v0, # intercept for first stage rt regression
