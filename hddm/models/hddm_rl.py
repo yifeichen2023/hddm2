@@ -23,7 +23,7 @@ class HDDMrl(HDDM):
         # self.gamma = kwargs.pop("gamma", False) # added for two-step task
         self.wm = kwargs.pop('wm', False) # added for WM, YC 10-26-23
 
-        self.wm_c = kwargs.pop('wm_c', False)   # addedd for WM choice set size complexity, YC 11-28-23
+        # self.wm_c = kwargs.pop('wm_c', False)   # addedd for WM choice set size complexity, YC 11-28-23
 
         self.lambda_ = kwargs.pop("lambda_", False) # added for two-step task
         self.v_reg = kwargs.pop("v_reg", False) # added for regression in two-step task
@@ -295,42 +295,42 @@ class HDDMrl(HDDM):
                     )
                 )
 
-            if self.wm_c:   # YC added for advanced WM with set size impact, 11-28-23
-                knodes.update(
-                    self._create_family_normal_non_centered(
-                        "c",
-                        value=0,
-                        g_mu=0.2,
-                        g_tau=3 ** -2,
-                        std_lower=1e-10,
-                        std_upper=10,
-                        std_value=1,
-                    )
-                )
-            if self.wm_c:   # YC added for advanced WM with set size impact, 11-28-23
-                knodes.update(
-                    self._create_family_normal_non_centered(
-                        "rho",
-                        value=0,
-                        g_mu=0.2,
-                        g_tau=3 ** -2,
-                        std_lower=1e-10,
-                        std_upper=10,
-                        std_value=1,
-                    )
-                )
-            if self.wm_c:   # YC added for advanced WM with set size impact, 11-28-23
-                knodes.update(
-                    self._create_family_normal_non_centered(
-                        "gamma",
-                        value=0,
-                        g_mu=0.2,
-                        g_tau=3 ** -2,
-                        std_lower=1e-10,
-                        std_upper=10,
-                        std_value=1,
-                    )
-                )
+            # if self.wm_c:   # YC added for advanced WM with set size impact, 11-28-23
+            #     knodes.update(
+            #         self._create_family_normal_non_centered(
+            #             "c",
+            #             value=0,
+            #             g_mu=0.2,
+            #             g_tau=3 ** -2,
+            #             std_lower=1e-10,
+            #             std_upper=10,
+            #             std_value=1,
+            #         )
+            #     )
+            # if self.wm_c:   # YC added for advanced WM with set size impact, 11-28-23
+            #     knodes.update(
+            #         self._create_family_normal_non_centered(
+            #             "rho",
+            #             value=0,
+            #             g_mu=0.2,
+            #             g_tau=3 ** -2,
+            #             std_lower=1e-10,
+            #             std_upper=10,
+            #             std_value=1,
+            #         )
+            #     )
+            # if self.wm_c:   # YC added for advanced WM with set size impact, 11-28-23
+            #     knodes.update(
+            #         self._create_family_normal_non_centered(
+            #             "gamma",
+            #             value=0,
+            #             g_mu=0.2,
+            #             g_tau=3 ** -2,
+            #             std_lower=1e-10,
+            #             std_upper=10,
+            #             std_value=1,
+            #         )
+            #     )
 
             if self.lambda_:
                 knodes.update(
@@ -633,42 +633,42 @@ class HDDMrl(HDDM):
                     )
                 )
 
-            if self.wm_c: # YC added for advanced WM, 11-28-23
-                knodes.update(
-                    self._create_family_normal(
-                        "c",
-                        value=0,
-                        g_mu=0.2,
-                        g_tau=3 ** -2,
-                        std_lower=1e-10,
-                        std_upper=10,
-                        std_value=1,
-                    )
-                )
-            if self.wm_c:   # YC added for advanced WM with set size impact, 11-28-23
-                knodes.update(
-                    self._create_family_normal(
-                        "rho",
-                        value=0,
-                        g_mu=0.2,
-                        g_tau=3 ** -2,
-                        std_lower=1e-10,
-                        std_upper=10,
-                        std_value=1,
-                    )
-                )
-            if self.wm_c:   # YC added for advanced WM with set size impact, 11-28-23
-                knodes.update(
-                    self._create_family_normal(
-                        "gamma",
-                        value=0,
-                        g_mu=0.2,
-                        g_tau=3 ** -2,
-                        std_lower=1e-10,
-                        std_upper=10,
-                        std_value=1,
-                    )
-                )
+            # if self.wm_c: # YC added for advanced WM, 11-28-23
+            #     knodes.update(
+            #         self._create_family_normal(
+            #             "c",
+            #             value=0,
+            #             g_mu=0.2,
+            #             g_tau=3 ** -2,
+            #             std_lower=1e-10,
+            #             std_upper=10,
+            #             std_value=1,
+            #         )
+            #     )
+            # if self.wm_c:   # YC added for advanced WM with set size impact, 11-28-23
+            #     knodes.update(
+            #         self._create_family_normal(
+            #             "rho",
+            #             value=0,
+            #             g_mu=0.2,
+            #             g_tau=3 ** -2,
+            #             std_lower=1e-10,
+            #             std_upper=10,
+            #             std_value=1,
+            #         )
+            #     )
+            # if self.wm_c:   # YC added for advanced WM with set size impact, 11-28-23
+            #     knodes.update(
+            #         self._create_family_normal(
+            #             "gamma",
+            #             value=0,
+            #             g_mu=0.2,
+            #             g_tau=3 ** -2,
+            #             std_lower=1e-10,
+            #             std_upper=10,
+            #             std_value=1,
+            #         )
+            #     )
 
             if self.lambda_:
                 knodes.update(
@@ -789,12 +789,13 @@ class HDDMrl(HDDM):
         wfpt_parents["lambda_"] = knodes["lambda__bottom"] if self.lambda_ else 100.00
 
         # # working memory componenets, YC added 10-30-23
-        wfpt_parents['gamma'] = knodes['gamma_bottom'] if self.wm or self.wm_c else 100.00   # decay parameter after each trial on all qs
+        wfpt_parents['gamma'] = knodes['gamma_bottom'] if self.wm else 100.00
+        # wfpt_parents['gamma'] = knodes['gamma_bottom'] if self.wm or self.wm_c else 100.00   # decay parameter after each trial on all qs
         wfpt_parents['wm_w'] = knodes['wm_w_bottom'] if self.wm else 100.00   # wm weight, final_q = wm_w*wm_q + (1-wm_w)*rl_q
 
-        # advanced WM componenets, YC added 11-28-23
-        wfpt_parents['c'] = knodes['c_bottom'] if self.wm_c else 100.00   # working memory capacity proportion
-        wfpt_parents['rho'] = knodes['rho_bottom'] if self.wm_c else 100.00     # initial WM weighting
+        # # advanced WM componenets, YC added 11-28-23
+        # wfpt_parents['c'] = knodes['c_bottom'] if self.wm_c else 100.00   # working memory capacity proportion
+        # wfpt_parents['rho'] = knodes['rho_bottom'] if self.wm_c else 100.00     # initial WM weighting
         # wfpt_parents['gamma'] = knodes['gamma_bottom'] if self.wm_c else 100.00   # decay parameter after each trial on all qs
 
         wfpt_parents["beta_ndt"] = knodes["beta_ndt_bottom"] if self.regress_ndt else 0.00
@@ -919,7 +920,7 @@ class HDDMrl(HDDM):
             self.wfpt_rl_class,
             "wfpt",
             observed=True,
-            col_name=["split_by", "feedback", "response1", "response2", "rt1", "rt2",  "q_init", "state1", "state2", "ssc", ],
+            col_name=["split_by", "feedback", "response1", "response2", "rt1", "rt2",  "q_init", "state1", "state2", ],
             # col_name=["split_by", "feedback", "response1", "response2", "rt1", "rt2",  "q_init", "state1", "state2", "isleft1", "isleft2"],
             **wfpt_parents
         )
@@ -1183,8 +1184,6 @@ def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_intera
     feedback = x["feedback"].values.astype(float)
     split_by = x["split_by"].values.astype(int)
 
-    # YC added 11-28-23 for advanced WM model, ssc level (notice that there should be only one ssc level)
-    ssc = x['ssc'].values[0]
 
     # JY added for two-step tasks on 2021-12-05
     # nstates = x["nstates"].values.astype(int)
@@ -1216,7 +1215,7 @@ def wienerRL_like_uncertainty(x, v0, v1, v2, v_interaction, z0, z1, z2, z_intera
         # gamma2,   # YC commented out for new WM, 10-30-23
         c,  # working memory capacity, YC added 11-28-23
         rho,    # initial WM weighting, YC added 11-28-23
-        ssc,    # YC added for advanced WM. 11-28-23
+        # ssc,    # YC added for advanced WM. 11-28-23
         lambda_, # added for two-step task
         v0, # intercept for first stage rt regression
         v1, # slope for mb
