@@ -84,7 +84,7 @@ class HDDMrl(HDDM):
         self.model_unc_rep = kwargs.pop("model_unc_rep", False) # uncertainty of model : set or ind?
         self.mem_unc_rep = kwargs.pop("mem_unc_rep", False) # uncertainty of memory: set or ind?
 
-        self.unc_hybrid = kwargs.pop("unc_hybrid", False) # whether to use hybrid
+        self.unc_hybrid = kwargs.pop("unc_hybrid", False) # whether to use hybrid, use fourth if we want a weight between piecemeal and configural
 
         self.choice_model = False # just a placeholder for compatibility
 
