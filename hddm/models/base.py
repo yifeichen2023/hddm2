@@ -1228,7 +1228,6 @@ class HDDMBase(AccumulatorModel):
                 "st2",
                 "sz2",
                 "sv2"
-                "wm_c", # YC added for advanced WM, 11-28-23
                 "wm_w", # YC added for WM, 10-25-23
 
 
